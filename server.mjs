@@ -1,44 +1,49 @@
-import express from "express";
+import express from 'express'
 
-const app = express();
-app.use(express.json());   // para conseguir ler o JSON do corpo dos pedidos POST
+const app = express()
 
-const students = [];
-let nextId = 1;
+app.use(express.json())
 
-// GET /students  (com ?limit=N opcional)
-app.get("/students", (req, res) => {
-    const limit = Number(req.query.limit);
-    if (req.query.limit !== undefined && (!Number.isInteger(limit) || limit < 0)) {
-        return res.status(400).json({ error: "Invalid limit" });
+const students = []
+let nextId = 1
+
+app.get("/students", getStudentsHandler)
+app.get("/students/:id", getStudentHandler)
+app.post("/students", createStudentHandler)
+
+app.listen(3000, () => console.log("Listening on port 3000"))
+
+
+function getStudentsHandler(req, resp) {
+    const limit = req.query.limit
+    if (limit === undefined) {
+        return resp.json(students)
     }
-    const result = req.query.limit !== undefined ? students.slice(0, limit) : students;
-    res.json(result);
-});
-
-// GET /students/:id
-app.get("/students/:id", (req, res) => {
-    const id = Number(req.params.id);
-    if (!Number.isInteger(id) || id < 1) {
-        return res.status(400).json({ error: "Invalid ID" });
+    const n = Number(limit)
+    if (!Number.isInteger(n) || n < 0) {
+        return resp.status(400).json({ error: "Invalid limit" })
     }
-    const student = students.find(s => s.id === id);
+    resp.json(students.slice(0, n))
+}
+
+function getStudentHandler(req, resp) {
+    const id = Number(req.params.id)
+    const student = students.find(s => s.id === id)
     if (!student) {
-        return res.status(404).json({ error: "Student not found" });
+        return resp.status(404).json({ error: "Student not found" })
     }
-    res.json(student);
-});
+    resp.json(student)
+}
 
-// POST /students
-app.post("/students", (req, res) => {
-        const { name, number } = req.body ?? {};
-    if (typeof name !== "string" || typeof number !== "number" || name.trim() === "") {
-        return res.status(400).json({ error: "Invalid data"});
+function createStudentHandler(req, resp) {
+    const body = req.body ?? {}
+    const name = body.name
+    const number = body.number
+    if (typeof name !== "string" || name.trim() === "" || typeof number !== "number") {
+        return resp.status(400).json({ error: "Invalid data" })
     }
-    const id = nextId++;
-    const student = { id, name, number };
-    students.push(student);
-    res.status(201).json(student);
-});
-
-app.listen(3000, () => console.log("Servidor a correr em http://localhost:3000"));
+    const student = { id: nextId, name: name, number: number }
+    nextId++
+    students.push(student)
+    resp.status(201).json(student)
+}

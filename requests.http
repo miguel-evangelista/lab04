@@ -1,38 +1,32 @@
-### Criar um aluno
 POST http://localhost:3000/students
 Content-Type: application/json
 
 {
-  "name": "Ana Silva",
-  "number": 12345
+    "name": "Ana Silva",
+    "number": 12345
 }
 
-### Criar outro aluno
-POST http://localhost:3000/students
-Content-Type: application/json
+###
 
-{
-  "name": "Rui Costa",
-  "number": 54321
-}
-
-### Dados inválidos (deve dar 400)
-POST http://localhost:3000/students
-Content-Type: application/json
-
-{
-  "name": "",
-  "number": "abc"
-}
-
-### Listar todos
 GET http://localhost:3000/students
 
-### Listar com limite
+###
+
 GET http://localhost:3000/students?limit=1
 
-### Ver um aluno
+###
+
 GET http://localhost:3000/students/1
 
-### Aluno que não existe (deve dar 404)
+###
+
 GET http://localhost:3000/students/99
+
+###
+
+POST http://localhost:3000/students
+Content-Type: application/json
+
+{
+    "name": "Ana Silva"
+}
