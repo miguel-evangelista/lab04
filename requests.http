@@ -30,3 +30,36 @@ Content-Type: application/json
 {
     "name": "Ana Silva"
 }
+
+### Atualizar o aluno 1
+PUT http://localhost:3000/students/1
+Content-Type: application/json
+
+{
+  "name": "Ana Silva Santos",
+  "number": 12345
+}
+
+### Atualizar com dados inválidos (deve dar 400)
+PUT http://localhost:3000/students/1
+Content-Type: application/json
+
+{
+  "name": "",
+  "number": 12345
+}
+
+### Atualizar aluno que não existe (deve dar 404)
+PUT http://localhost:3000/students/99
+Content-Type: application/json
+
+{
+  "name": "Ninguém",
+  "number": 1
+}
+
+### Apagar o aluno 2 (deve dar 204)
+DELETE http://localhost:3000/students/2
+
+### Apagar outra vez o aluno 2 (deve dar 404)
+DELETE http://localhost:3000/students/2
